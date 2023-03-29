@@ -1,0 +1,39 @@
+jobs:
+  build:
+    steps:
+      - checkout
+      - run: echo "This is a build step"    # similar to "script" in GitLab
+
+  test:
+    steps:
+      - checkout
+      - run: echo "This is a test step"
+
+  integration:
+    steps:
+      - checkout
+      - run:
+          command: |
+            echo "This is an integration step"
+            exit 1
+
+  prod:
+    steps:
+      - checkout
+      - run: echo "This is a deploy step."
+
+workflows:
+  version: 2
+  rails:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build 
+      - integration:
+          requires:
+            - test
+      - prod:
+          type: approval
+          requires:
+            - integration
